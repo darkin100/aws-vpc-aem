@@ -32,11 +32,6 @@
         "VpcId": {
           "Ref": "vpcid"
         }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "b354a1ea-97ec-4959-8c20-99dd7ea08e14"
-        }
       }
     },
     "1aPublicSubnet": {
@@ -46,11 +41,6 @@
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
           "Ref": "vpcid"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "67395b31-a444-4d81-a3b4-f0cca350cedc"
         }
       }
     },
@@ -62,11 +52,6 @@
         "VpcId": {
           "Ref": "vpcid"
         }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "307c371b-38ac-4591-9fbb-05d141918a75"
-        }
       }
     },
     "1bPublisherLiveSubnet": {
@@ -76,11 +61,6 @@
         "AvailabilityZone": "eu-west-1b",
         "VpcId": {
           "Ref": "vpcid"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "8439a7c8-0b73-4f37-8bc7-ff03bb0ae392"
         }
       }
     },
@@ -92,11 +72,6 @@
         "VpcId": {
           "Ref": "vpcid"
         }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "6073dd9b-3538-4a51-a084-695b0bc0f539"
-        }
       }
     },
     "1bPublicSubnet": {
@@ -106,11 +81,6 @@
         "AvailabilityZone": "eu-west-1b",
         "VpcId": {
           "Ref": "vpcid"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "e84736ba-63fa-4e33-a434-47d2611d3879"
         }
       }
     },
@@ -122,11 +92,6 @@
         "VpcId": {
           "Ref": "vpcid"
         }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "a6c62a2d-5133-48a3-b145-0c10b5964aae"
-        }
       }
     },
     "1aPublisherStaging": {
@@ -136,17 +101,6 @@
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
           "Ref": "vpcid"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "VPC-Test-1a-Publisher-Staging"
-          }
-        ]
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "18c736f7-3c9f-4e81-ac44-93dc4954a6de"
         }
       }
     },
@@ -157,17 +111,6 @@
         "AvailabilityZone": "eu-west-1b",
         "VpcId": {
           "Ref": "vpcid"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "VPC-Test-1b-Author"
-          }
-        ]
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "dee02d0f-c294-4789-9e56-c6cafafd108b"
         }
       }
     },
@@ -178,17 +121,6 @@
         "AvailabilityZone": "eu-west-1b",
         "VpcId": {
           "Ref": "vpcid"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "VPC-Test-1b-Publisher-Staging"
-          }
-        ]
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "9d853e96-e882-4518-9a72-1fcf958e6404"
         }
       }
     },
@@ -221,11 +153,6 @@
         "VpcId": {
           "Ref": "vpcid"
         }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "839f062f-cdd1-4343-ba8e-c28efd28ccdb"
-        }
       }
     },
     "rtbbb6a6ede": {
@@ -234,11 +161,6 @@
         "VpcId": {
           "Ref": "vpcid"
         }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "1446dfd0-2b2e-417a-bbd3-693602f5b921"
-        }
       }
     },
     "rtbba6a6edf": {
@@ -246,11 +168,6 @@
       "Properties": {
         "VpcId": {
           "Ref": "vpcid"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "ff42b38d-3080-4762-9229-0f954310bbbf"
         }
       }
     },
@@ -323,11 +240,6 @@
         "GroupDescription": "Security Group for the WebServer",
         "VpcId": {
           "Ref": "vpcid"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "9f1cf069-1301-45be-8eea-0209bf364e61"
         }
       }
     },
@@ -480,11 +392,6 @@
         "InternetGatewayId": {
           "Ref": "igwc179e2a4"
         }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "928fbfb2-9ee9-4923-93a3-9569b0e29eeb"
-        }
       }
     },
     "subnetroute2": {
@@ -496,11 +403,6 @@
         "SubnetId": {
           "Ref": "1bPublicSubnet"
         }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "e8c5720b-53bb-48a8-838e-edbf5bf7d4e5"
-        }
       }
     },
     "subnetroute3": {
@@ -511,11 +413,6 @@
         },
         "SubnetId": {
           "Ref": "1aPublicSubnet"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "cdb68f75-4eb6-4d27-9099-dcb8b78c3c38"
         }
       }
     },
@@ -545,11 +442,6 @@
         },
         "DhcpOptionsId": {
           "Ref": "dopt70509915"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "d9e6102f-9ea4-4d27-8147-71aeb1420bb8"
         }
       }
     },
@@ -597,439 +489,6 @@
         },
         "IpProtocol": "-1",
         "CidrIp": "0.0.0.0/0"
-      }
-    }
-  },
-  "Description": "",
-  "Metadata": {
-    "AWS::CloudFormation::Designer": {
-      "6e6b5e99-367a-4888-950d-0eb122c08e2f": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 60,
-          "y": 1110
-        },
-        "z": 1,
-        "embeds": []
-      },
-      "676ca491-b50e-4a42-8d83-aeb87c6e73a4": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 180,
-          "y": 1110
-        },
-        "z": 1,
-        "embeds": []
-      },
-      "f9b6c11d-fdfa-4ec6-8221-cc72618434af": {
-        "size": {
-          "width": 1050,
-          "height": 960
-        },
-        "position": {
-          "x": 60,
-          "y": 90
-        },
-        "z": 1,
-        "embeds": [
-          "9f1cf069-1301-45be-8eea-0209bf364e61",
-          "ff42b38d-3080-4762-9229-0f954310bbbf",
-          "1446dfd0-2b2e-417a-bbd3-693602f5b921",
-          "839f062f-cdd1-4343-ba8e-c28efd28ccdb",
-          "9d853e96-e882-4518-9a72-1fcf958e6404",
-          "dee02d0f-c294-4789-9e56-c6cafafd108b",
-          "18c736f7-3c9f-4e81-ac44-93dc4954a6de",
-          "a6c62a2d-5133-48a3-b145-0c10b5964aae",
-          "e84736ba-63fa-4e33-a434-47d2611d3879",
-          "6073dd9b-3538-4a51-a084-695b0bc0f539",
-          "8439a7c8-0b73-4f37-8bc7-ff03bb0ae392",
-          "307c371b-38ac-4591-9fbb-05d141918a75",
-          "67395b31-a444-4d81-a3b4-f0cca350cedc",
-          "b354a1ea-97ec-4959-8c20-99dd7ea08e14"
-        ]
-      },
-      "d9e6102f-9ea4-4d27-8147-71aeb1420bb8": {
-        "source": {
-          "id": "6e6b5e99-367a-4888-950d-0eb122c08e2f"
-        },
-        "target": {
-          "id": "f9b6c11d-fdfa-4ec6-8221-cc72618434af"
-        },
-        "z": 1
-      },
-      "928fbfb2-9ee9-4923-93a3-9569b0e29eeb": {
-        "source": {
-          "id": "676ca491-b50e-4a42-8d83-aeb87c6e73a4"
-        },
-        "target": {
-          "id": "f9b6c11d-fdfa-4ec6-8221-cc72618434af"
-        },
-        "z": 1
-      },
-      "9f1cf069-1301-45be-8eea-0209bf364e61": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 900,
-          "y": 150
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": []
-      },
-      "ff42b38d-3080-4762-9229-0f954310bbbf": {
-        "size": {
-          "width": 240,
-          "height": 240
-        },
-        "position": {
-          "x": 90,
-          "y": 450
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": [
-          "e7205cef-6f5a-4ac0-a622-c36d65946cd9"
-        ]
-      },
-      "e7205cef-6f5a-4ac0-a622-c36d65946cd9": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 120,
-          "y": 510
-        },
-        "z": 3,
-        "parent": "ff42b38d-3080-4762-9229-0f954310bbbf",
-        "embeds": [],
-        "references": [
-          "676ca491-b50e-4a42-8d83-aeb87c6e73a4"
-        ],
-        "dependson": [
-          "928fbfb2-9ee9-4923-93a3-9569b0e29eeb"
-        ]
-      },
-      "1446dfd0-2b2e-417a-bbd3-693602f5b921": {
-        "size": {
-          "width": 150,
-          "height": 150
-        },
-        "position": {
-          "x": 810,
-          "y": 570
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": []
-      },
-      "839f062f-cdd1-4343-ba8e-c28efd28ccdb": {
-        "size": {
-          "width": 330,
-          "height": 240
-        },
-        "position": {
-          "x": 90,
-          "y": 150
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": [
-          "0bd580e2-ac6b-4e8d-a773-aa7aa31a644d",
-          "8ea114fd-7876-491b-b9c7-5c5940b66a5f"
-        ]
-      },
-      "0bd580e2-ac6b-4e8d-a773-aa7aa31a644d": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 120,
-          "y": 210
-        },
-        "z": 3,
-        "parent": "839f062f-cdd1-4343-ba8e-c28efd28ccdb",
-        "embeds": []
-      },
-      "8ea114fd-7876-491b-b9c7-5c5940b66a5f": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 240,
-          "y": 210
-        },
-        "z": 3,
-        "parent": "839f062f-cdd1-4343-ba8e-c28efd28ccdb",
-        "embeds": []
-      },
-      "9d853e96-e882-4518-9a72-1fcf958e6404": {
-        "size": {
-          "width": 150,
-          "height": 150
-        },
-        "position": {
-          "x": 720,
-          "y": 780
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": []
-      },
-      "e38c4eec-f5ff-4144-ad3e-afccd3d19a01": {
-        "source": {
-          "id": "839f062f-cdd1-4343-ba8e-c28efd28ccdb"
-        },
-        "target": {
-          "id": "9d853e96-e882-4518-9a72-1fcf958e6404"
-        },
-        "z": 2
-      },
-      "dee02d0f-c294-4789-9e56-c6cafafd108b": {
-        "size": {
-          "width": 150,
-          "height": 150
-        },
-        "position": {
-          "x": 510,
-          "y": 780
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": []
-      },
-      "7c63dee1-41e4-48ff-8a18-fe0fc6d8a740": {
-        "source": {
-          "id": "839f062f-cdd1-4343-ba8e-c28efd28ccdb"
-        },
-        "target": {
-          "id": "dee02d0f-c294-4789-9e56-c6cafafd108b"
-        },
-        "z": 2
-      },
-      "18c736f7-3c9f-4e81-ac44-93dc4954a6de": {
-        "size": {
-          "width": 150,
-          "height": 150
-        },
-        "position": {
-          "x": 300,
-          "y": 780
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": []
-      },
-      "0d1e4998-dc72-489f-b3a9-b9325906f1fc": {
-        "source": {
-          "id": "839f062f-cdd1-4343-ba8e-c28efd28ccdb"
-        },
-        "target": {
-          "id": "18c736f7-3c9f-4e81-ac44-93dc4954a6de"
-        },
-        "z": 2
-      },
-      "a6c62a2d-5133-48a3-b145-0c10b5964aae": {
-        "size": {
-          "width": 150,
-          "height": 150
-        },
-        "position": {
-          "x": 90,
-          "y": 750
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": []
-      },
-      "77fd81b0-3994-4215-a926-ae09e8dd5792": {
-        "source": {
-          "id": "839f062f-cdd1-4343-ba8e-c28efd28ccdb"
-        },
-        "target": {
-          "id": "a6c62a2d-5133-48a3-b145-0c10b5964aae"
-        },
-        "z": 2
-      },
-      "e84736ba-63fa-4e33-a434-47d2611d3879": {
-        "size": {
-          "width": 150,
-          "height": 150
-        },
-        "position": {
-          "x": 690,
-          "y": 360
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": []
-      },
-      "cdb68f75-4eb6-4d27-9099-dcb8b78c3c38": {
-        "source": {
-          "id": "ff42b38d-3080-4762-9229-0f954310bbbf"
-        },
-        "target": {
-          "id": "e84736ba-63fa-4e33-a434-47d2611d3879"
-        },
-        "z": 2
-      },
-      "ff54f1a9-083b-4b3a-a937-e6c1c01120cb": {
-        "source": {
-          "id": "839f062f-cdd1-4343-ba8e-c28efd28ccdb"
-        },
-        "target": {
-          "id": "e84736ba-63fa-4e33-a434-47d2611d3879"
-        },
-        "z": 2
-      },
-      "6073dd9b-3538-4a51-a084-695b0bc0f539": {
-        "size": {
-          "width": 150,
-          "height": 150
-        },
-        "position": {
-          "x": 690,
-          "y": 150
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": []
-      },
-      "c02b3b22-6256-42dd-878a-8f2709590fe4": {
-        "source": {
-          "id": "839f062f-cdd1-4343-ba8e-c28efd28ccdb"
-        },
-        "target": {
-          "id": "6073dd9b-3538-4a51-a084-695b0bc0f539"
-        },
-        "z": 2
-      },
-      "8439a7c8-0b73-4f37-8bc7-ff03bb0ae392": {
-        "size": {
-          "width": 150,
-          "height": 150
-        },
-        "position": {
-          "x": 600,
-          "y": 570
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": []
-      },
-      "06f219c8-9b52-4715-b795-3863806b06e2": {
-        "source": {
-          "id": "839f062f-cdd1-4343-ba8e-c28efd28ccdb"
-        },
-        "target": {
-          "id": "8439a7c8-0b73-4f37-8bc7-ff03bb0ae392"
-        },
-        "z": 2
-      },
-      "307c371b-38ac-4591-9fbb-05d141918a75": {
-        "size": {
-          "width": 150,
-          "height": 150
-        },
-        "position": {
-          "x": 390,
-          "y": 570
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": []
-      },
-      "abc985fe-d223-4059-9bc3-adee66a2d19f": {
-        "source": {
-          "id": "839f062f-cdd1-4343-ba8e-c28efd28ccdb"
-        },
-        "target": {
-          "id": "307c371b-38ac-4591-9fbb-05d141918a75"
-        },
-        "z": 2
-      },
-      "67395b31-a444-4d81-a3b4-f0cca350cedc": {
-        "size": {
-          "width": 150,
-          "height": 150
-        },
-        "position": {
-          "x": 480,
-          "y": 360
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": []
-      },
-      "e8c5720b-53bb-48a8-838e-edbf5bf7d4e5": {
-        "source": {
-          "id": "ff42b38d-3080-4762-9229-0f954310bbbf"
-        },
-        "target": {
-          "id": "67395b31-a444-4d81-a3b4-f0cca350cedc"
-        },
-        "z": 2
-      },
-      "45ada5a0-c706-48ec-9ef3-f3eba3e2435a": {
-        "source": {
-          "id": "839f062f-cdd1-4343-ba8e-c28efd28ccdb"
-        },
-        "target": {
-          "id": "67395b31-a444-4d81-a3b4-f0cca350cedc"
-        },
-        "z": 2
-      },
-      "89c7a406-5155-41ee-8744-11bbc2533533": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 300,
-          "y": 1110
-        },
-        "z": 1,
-        "embeds": [],
-        "isconnectedto": [
-          "67395b31-a444-4d81-a3b4-f0cca350cedc",
-          "e84736ba-63fa-4e33-a434-47d2611d3879"
-        ],
-        "ismemberof": [
-          "9f1cf069-1301-45be-8eea-0209bf364e61"
-        ]
-      },
-      "b354a1ea-97ec-4959-8c20-99dd7ea08e14": {
-        "size": {
-          "width": 150,
-          "height": 150
-        },
-        "position": {
-          "x": 480,
-          "y": 150
-        },
-        "z": 2,
-        "parent": "f9b6c11d-fdfa-4ec6-8221-cc72618434af",
-        "embeds": []
-      },
-      "4ce2fe86-fc07-46ac-bc64-73d0e1aba322": {
-        "source": {
-          "id": "839f062f-cdd1-4343-ba8e-c28efd28ccdb"
-        },
-        "target": {
-          "id": "b354a1ea-97ec-4959-8c20-99dd7ea08e14"
-        },
-        "z": 2
       }
     }
   }
