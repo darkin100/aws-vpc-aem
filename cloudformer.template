@@ -1,15 +1,15 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description" : "A basic AWS VPC for hosting Adobe AEM. "
+  "Description" : "A basic AWS VPC for hosting Adobe AEM. ",
   "Parameters": {
     "VpcNameParameter": {
       "Type": "String",
-      "Default": "DS-VPC",
+      "Default": "VPC Name",
       "Description": "The name to be used for the VPC"
     }
   },
   "Resources": {
-    "VPC": {
+    "vpcid": {
       "Type": "AWS::EC2::VPC",
       "Properties": {
         "CidrBlock": "10.0.0.0/16",
@@ -24,13 +24,13 @@
         ]
       }
     },
-    "1b-dispatcher": {
+    "1bDispatcherSubnet": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.5.0/24",
         "AvailabilityZone": "eu-west-1b",
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         }
       },
       "Metadata": {
@@ -39,13 +39,13 @@
         }
       }
     },
-    "1a-public": {
+    "1aPublicSubnet": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.0.0/24",
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         }
       },
       "Metadata": {
@@ -54,13 +54,13 @@
         }
       }
     },
-    "1a-publisher-live": {
+    "1aPublisherLiveSubnet": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.8.0/24",
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         }
       },
       "Metadata": {
@@ -69,13 +69,13 @@
         }
       }
     },
-    "1b-publisher-live": {
+    "1bPublisherLiveSubnet": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.9.0/24",
         "AvailabilityZone": "eu-west-1b",
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         }
       },
       "Metadata": {
@@ -84,13 +84,13 @@
         }
       }
     },
-    "1a-dispatcher": {
+    "1aDispatcherSubnet": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.4.0/24",
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         }
       },
       "Metadata": {
@@ -99,13 +99,13 @@
         }
       }
     },
-    "1b-public": {
+    "1bPublicSubnet": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.1.0/24",
         "AvailabilityZone": "eu-west-1b",
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         }
       },
       "Metadata": {
@@ -114,13 +114,13 @@
         }
       }
     },
-    "1a-author": {
+    "1aAuthorSubnet": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.16.0/24",
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         }
       },
       "Metadata": {
@@ -129,13 +129,13 @@
         }
       }
     },
-    "1a-publisher-staging": {
+    "1aPublisherStaging": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.12.0/24",
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         },
         "Tags": [
           {
@@ -150,13 +150,13 @@
         }
       }
     },
-    "subneta68e8cc3": {
+    "1bPublisherStaging": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.17.0/24",
         "AvailabilityZone": "eu-west-1b",
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         },
         "Tags": [
           {
@@ -171,13 +171,13 @@
         }
       }
     },
-    "subnetc88e8cad": {
+    "1bAuthorSubnet": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.13.0/24",
         "AvailabilityZone": "eu-west-1b",
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         },
         "Tags": [
           {
@@ -219,7 +219,7 @@
       "Type": "AWS::EC2::NetworkAcl",
       "Properties": {
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         }
       },
       "Metadata": {
@@ -232,7 +232,7 @@
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         }
       },
       "Metadata": {
@@ -245,7 +245,7 @@
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         }
       },
       "Metadata": {
@@ -647,10 +647,10 @@
         ],
         "Subnets": [
           {
-            "Ref": "subnet900229e7"
+            "Ref": "1aPublicSubnet"
           },
           {
-            "Ref": "subnete38e8c86"
+            "Ref": "1bPublicSubnet"
           }
         ],
         "HealthCheck": {
@@ -703,7 +703,7 @@
       "Properties": {
         "GroupDescription": "Security Group for the WebServer",
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         }
       },
       "Metadata": {
@@ -740,170 +740,115 @@
         "NetworkAclId": {
           "Ref": "acl7fa5991a"
         }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "0bd580e2-ac6b-4e8d-a773-aa7aa31a644d"
-        }
       }
     },
-    "subnetacl1": {
+    "1aPublicSubnetAclAss": {
       "Type": "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties": {
         "NetworkAclId": {
           "Ref": "acl7fa5991a"
         },
         "SubnetId": {
-          "Ref": "subnetc88e8cad"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "e38c4eec-f5ff-4144-ad3e-afccd3d19a01"
+          "Ref": "1aPublicSubnet"
         }
       }
     },
-    "subnetacl2": {
+    "1bPublicSubnetAclAss": {
       "Type": "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties": {
         "NetworkAclId": {
           "Ref": "acl7fa5991a"
         },
         "SubnetId": {
-          "Ref": "subnet900229e7"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "45ada5a0-c706-48ec-9ef3-f3eba3e2435a"
+          "Ref": "1bPublicSubnet"
         }
       }
     },
-    "subnetacl3": {
+    "1aDispatcherSubnetAclAss": {
       "Type": "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties": {
         "NetworkAclId": {
           "Ref": "acl7fa5991a"
         },
         "SubnetId": {
-          "Ref": "subnet806d47f7"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "0d1e4998-dc72-489f-b3a9-b9325906f1fc"
+          "Ref": "1aDispatcherSubnet"
         }
       }
     },
-    "subnetacl4": {
+    "1bDispatcherSubnetAclAss": {
       "Type": "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties": {
         "NetworkAclId": {
           "Ref": "acl7fa5991a"
         },
         "SubnetId": {
-          "Ref": "subnet64624813"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "77fd81b0-3994-4215-a926-ae09e8dd5792"
+          "Ref": "1bDispatcherSubnet"
         }
       }
     },
-    "subnetacl5": {
+    "1aPublisherLiveSubnetAclAss": {
       "Type": "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties": {
         "NetworkAclId": {
           "Ref": "acl7fa5991a"
         },
         "SubnetId": {
-          "Ref": "subnetc58e8ca0"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "06f219c8-9b52-4715-b795-3863806b06e2"
+          "Ref": "1aPublisherLiveSubnet"
         }
       }
     },
-    "subnetacl6": {
+    "1bPublisherLiveSubnetAclAss": {
       "Type": "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties": {
         "NetworkAclId": {
           "Ref": "acl7fa5991a"
         },
         "SubnetId": {
-          "Ref": "subneta68e8cc3"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "7c63dee1-41e4-48ff-8a18-fe0fc6d8a740"
+          "Ref": "1bPublisherLiveSubnet"
         }
       }
     },
-    "subnetacl7": {
+    "1aPublisherStagingAclAss": {
       "Type": "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties": {
         "NetworkAclId": {
           "Ref": "acl7fa5991a"
         },
         "SubnetId": {
-          "Ref": "subnet2c68425b"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "c02b3b22-6256-42dd-878a-8f2709590fe4"
+          "Ref": "1aPublisherStaging"
         }
       }
     },
-    "subnetacl8": {
+    "1bPublisherStagingAclAss": {
       "Type": "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties": {
         "NetworkAclId": {
           "Ref": "acl7fa5991a"
         },
         "SubnetId": {
-          "Ref": "subnete38e8c86"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "ff54f1a9-083b-4b3a-a937-e6c1c01120cb"
+          "Ref": "1bPublisherStaging"
         }
       }
     },
-    "subnetacl9": {
+    "1bAuthorSubnetAclAss": {
       "Type": "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties": {
         "NetworkAclId": {
           "Ref": "acl7fa5991a"
         },
         "SubnetId": {
-          "Ref": "subnetf38e8c96"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "4ce2fe86-fc07-46ac-bc64-73d0e1aba322"
+          "Ref": "1bAuthorSubnet"
         }
       }
     },
-    "subnetacl10": {
+    "1aAuthorSubnetAclAss": {
       "Type": "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties": {
         "NetworkAclId": {
           "Ref": "acl7fa5991a"
         },
         "SubnetId": {
-          "Ref": "subnetf5684282"
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "abc985fe-d223-4059-9bc3-adee66a2d19f"
+          "Ref": "1aAuthorSubnet"
         }
       }
     },
@@ -911,7 +856,7 @@
       "Type": "AWS::EC2::VPCGatewayAttachment",
       "Properties": {
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         },
         "InternetGatewayId": {
           "Ref": "igwc179e2a4"
@@ -930,7 +875,7 @@
           "Ref": "rtbba6a6edf"
         },
         "SubnetId": {
-          "Ref": "subnet900229e7"
+          "Ref": "1bPublicSubnet"
         }
       },
       "Metadata": {
@@ -946,7 +891,7 @@
           "Ref": "rtbba6a6edf"
         },
         "SubnetId": {
-          "Ref": "subnete38e8c86"
+          "Ref": "1aPublicSubnet"
         }
       },
       "Metadata": {
@@ -977,7 +922,7 @@
       "Type": "AWS::EC2::VPCDHCPOptionsAssociation",
       "Properties": {
         "VpcId": {
-          "Ref": "vpc73297116"
+          "Ref": "vpcid"
         },
         "DhcpOptionsId": {
           "Ref": "dopt70509915"
