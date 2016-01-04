@@ -9,7 +9,7 @@
     }
   },
   "Resources": {
-    "vpc73297116": {
+    "VPC": {
       "Type": "AWS::EC2::VPC",
       "Properties": {
         "CidrBlock": "10.0.0.0/16",
@@ -29,20 +29,14 @@
         }
       }
     },
-    "subnetf38e8c96": {
+    "1b-dispatcher": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.5.0/24",
         "AvailabilityZone": "eu-west-1b",
         "VpcId": {
           "Ref": "vpc73297116"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "VPC-Test-1b-Disaptcher"
-          }
-        ]
+        }
       },
       "Metadata": {
         "AWS::CloudFormation::Designer": {
@@ -50,20 +44,14 @@
         }
       }
     },
-    "subnet900229e7": {
+    "1a-public": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.0.0/24",
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
           "Ref": "vpc73297116"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "VPC-Test-1a-Public-Subnet"
-          }
-        ]
+        }
       },
       "Metadata": {
         "AWS::CloudFormation::Designer": {
@@ -71,20 +59,14 @@
         }
       }
     },
-    "subnetf5684282": {
+    "1a-publisher-live": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.8.0/24",
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
           "Ref": "vpc73297116"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "VPC-Test-1a-Publisher-Live"
-          }
-        ]
+        }
       },
       "Metadata": {
         "AWS::CloudFormation::Designer": {
@@ -92,20 +74,14 @@
         }
       }
     },
-    "subnetc58e8ca0": {
+    "1b-publisher-live": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.9.0/24",
         "AvailabilityZone": "eu-west-1b",
         "VpcId": {
           "Ref": "vpc73297116"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "VPC-Test-1b-Publisher-Live"
-          }
-        ]
+        }
       },
       "Metadata": {
         "AWS::CloudFormation::Designer": {
@@ -113,20 +89,14 @@
         }
       }
     },
-    "subnet2c68425b": {
+    "1a-dispatcher": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.4.0/24",
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
           "Ref": "vpc73297116"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "VPC-Test-1a-Dispatcher"
-          }
-        ]
+        }
       },
       "Metadata": {
         "AWS::CloudFormation::Designer": {
@@ -134,20 +104,14 @@
         }
       }
     },
-    "subnete38e8c86": {
+    "1b-public": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.1.0/24",
         "AvailabilityZone": "eu-west-1b",
         "VpcId": {
           "Ref": "vpc73297116"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "VPC-Test-1b-Public Subnet"
-          }
-        ]
+        }
       },
       "Metadata": {
         "AWS::CloudFormation::Designer": {
@@ -155,20 +119,14 @@
         }
       }
     },
-    "subnet64624813": {
+    "1a-author": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.16.0/24",
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
           "Ref": "vpc73297116"
-        },
-        "Tags": [
-          {
-            "Key": "Name",
-            "Value": "VPC-Test-1a-Author"
-          }
-        ]
+        }
       },
       "Metadata": {
         "AWS::CloudFormation::Designer": {
@@ -176,7 +134,7 @@
         }
       }
     },
-    "subnet806d47f7": {
+    "1a-publisher-staging": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.12.0/24",
