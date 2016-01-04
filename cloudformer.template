@@ -22,11 +22,6 @@
             "Value": { "Ref" : "VpcNameParameter" }
           }
         ]
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "f9b6c11d-fdfa-4ec6-8221-cc72618434af"
-        }
       }
     },
     "1b-dispatcher": {
