@@ -1,0 +1,661 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "A basic AWS VPC for hosting Adobe AEM. ",
+    "Parameters": {
+        "VpcNameParameter": {
+            "Type": "String",
+            "Default": "VPC Name",
+            "Description": "The name to be used for the VPC"
+        },
+        "InstanceType": {
+            "Description": "WebServer EC2 instance type",
+            "Type": "String",
+            "Default": "t1.micro",
+            "AllowedValues": [
+                "t1.micro","t2.micro",
+                "t2.small",
+                "t2.medium",
+                "m1.small",
+                "m1.medium",
+                "m1.large",
+                "m1.xlarge",
+                "m2.xlarge",
+                "m2.2xlarge",
+                "m2.4xlarge",
+                "m3.medium",
+                "m3.large",
+                "m3.xlarge",
+                "m3.2xlarge",
+                "c1.medium",
+                "c1.xlarge",
+                "c3.large",
+                "c3.xlarge",
+                "c3.2xlarge",
+                "c3.4xlarge",
+                "c3.8xlarge",
+                "c4.large",
+                "c4.xlarge",
+                "c4.2xlarge",
+                "c4.4xlarge",
+                "c4.8xlarge",
+                "g2.2xlarge",
+                "r3.large",
+                "r3.xlarge",
+                "r3.2xlarge",
+                "r3.4xlarge",
+                "r3.8xlarge",
+                "i2.xlarge",
+                "i2.2xlarge",
+                "i2.4xlarge",
+                "i2.8xlarge",
+                "d2.xlarge",
+                "d2.2xlarge",
+                "d2.4xlarge",
+                "d2.8xlarge",
+                "hi1.4xlarge",
+                "hs1.8xlarge",
+                "cr1.8xlarge",
+                "cc2.8xlarge",
+                "cg1.4xlarge"
+            ],
+            "ConstraintDescription": "must be a valid EC2 instance type."
+        }
+    },
+        
+   "Mappings" : {
+    "AWSInstanceType2Arch" : {
+      "t1.micro"    : { "Arch" : "PV64"   },
+      "t2.micro"    : { "Arch" : "HVM64"  },
+      "t2.small"    : { "Arch" : "HVM64"  },
+      "t2.medium"   : { "Arch" : "HVM64"  },
+      "m1.small"    : { "Arch" : "PV64"   },
+      "m1.medium"   : { "Arch" : "PV64"   },
+      "m1.large"    : { "Arch" : "PV64"   },
+      "m1.xlarge"   : { "Arch" : "PV64"   },
+      "m2.xlarge"   : { "Arch" : "PV64"   },
+      "m2.2xlarge"  : { "Arch" : "PV64"   },
+      "m2.4xlarge"  : { "Arch" : "PV64"   },
+      "m3.medium"   : { "Arch" : "HVM64"  },
+      "m3.large"    : { "Arch" : "HVM64"  },
+      "m3.xlarge"   : { "Arch" : "HVM64"  },
+      "m3.2xlarge"  : { "Arch" : "HVM64"  },
+      "c1.medium"   : { "Arch" : "PV64"   },
+      "c1.xlarge"   : { "Arch" : "PV64"   },
+      "c3.large"    : { "Arch" : "HVM64"  },
+      "c3.xlarge"   : { "Arch" : "HVM64"  },
+      "c3.2xlarge"  : { "Arch" : "HVM64"  },
+      "c3.4xlarge"  : { "Arch" : "HVM64"  },
+      "c3.8xlarge"  : { "Arch" : "HVM64"  },
+      "c4.large"    : { "Arch" : "HVM64"  },
+      "c4.xlarge"   : { "Arch" : "HVM64"  },
+      "c4.2xlarge"  : { "Arch" : "HVM64"  },
+      "c4.4xlarge"  : { "Arch" : "HVM64"  },
+      "c4.8xlarge"  : { "Arch" : "HVM64"  },
+      "g2.2xlarge"  : { "Arch" : "HVMG2"  },
+      "r3.large"    : { "Arch" : "HVM64"  },
+      "r3.xlarge"   : { "Arch" : "HVM64"  },
+      "r3.2xlarge"  : { "Arch" : "HVM64"  },
+      "r3.4xlarge"  : { "Arch" : "HVM64"  },
+      "r3.8xlarge"  : { "Arch" : "HVM64"  },
+      "i2.xlarge"   : { "Arch" : "HVM64"  },
+      "i2.2xlarge"  : { "Arch" : "HVM64"  },
+      "i2.4xlarge"  : { "Arch" : "HVM64"  },
+      "i2.8xlarge"  : { "Arch" : "HVM64"  },
+      "d2.xlarge"   : { "Arch" : "HVM64"  },
+      "d2.2xlarge"  : { "Arch" : "HVM64"  },
+      "d2.4xlarge"  : { "Arch" : "HVM64"  },
+      "d2.8xlarge"  : { "Arch" : "HVM64"  },
+      "hi1.4xlarge" : { "Arch" : "HVM64"  },
+      "hs1.8xlarge" : { "Arch" : "HVM64"  },
+      "cr1.8xlarge" : { "Arch" : "HVM64"  },
+      "cc2.8xlarge" : { "Arch" : "HVM64"  }
+    },
+
+    "AWSInstanceType2NATArch" : {
+      "t1.micro"    : { "Arch" : "NATPV64"   },
+      "t2.micro"    : { "Arch" : "NATHVM64"  },
+      "t2.small"    : { "Arch" : "NATHVM64"  },
+      "t2.medium"   : { "Arch" : "NATHVM64"  },
+      "m1.small"    : { "Arch" : "NATPV64"   },
+      "m1.medium"   : { "Arch" : "NATPV64"   },
+      "m1.large"    : { "Arch" : "NATPV64"   },
+      "m1.xlarge"   : { "Arch" : "NATPV64"   },
+      "m2.xlarge"   : { "Arch" : "NATPV64"   },
+      "m2.2xlarge"  : { "Arch" : "NATPV64"   },
+      "m2.4xlarge"  : { "Arch" : "NATPV64"   },
+      "m3.medium"   : { "Arch" : "NATHVM64"  },
+      "m3.large"    : { "Arch" : "NATHVM64"  },
+      "m3.xlarge"   : { "Arch" : "NATHVM64"  },
+      "m3.2xlarge"  : { "Arch" : "NATHVM64"  },
+      "c1.medium"   : { "Arch" : "NATPV64"   },
+      "c1.xlarge"   : { "Arch" : "NATPV64"   },
+      "c3.large"    : { "Arch" : "NATHVM64"  },
+      "c3.xlarge"   : { "Arch" : "NATHVM64"  },
+      "c3.2xlarge"  : { "Arch" : "NATHVM64"  },
+      "c3.4xlarge"  : { "Arch" : "NATHVM64"  },
+      "c3.8xlarge"  : { "Arch" : "NATHVM64"  },
+      "c4.large"    : { "Arch" : "NATHVM64"  },
+      "c4.xlarge"   : { "Arch" : "NATHVM64"  },
+      "c4.2xlarge"  : { "Arch" : "NATHVM64"  },
+      "c4.4xlarge"  : { "Arch" : "NATHVM64"  },
+      "c4.8xlarge"  : { "Arch" : "NATHVM64"  },
+      "g2.2xlarge"  : { "Arch" : "NATHVMG2"  },
+      "r3.large"    : { "Arch" : "NATHVM64"  },
+      "r3.xlarge"   : { "Arch" : "NATHVM64"  },
+      "r3.2xlarge"  : { "Arch" : "NATHVM64"  },
+      "r3.4xlarge"  : { "Arch" : "NATHVM64"  },
+      "r3.8xlarge"  : { "Arch" : "NATHVM64"  },
+      "i2.xlarge"   : { "Arch" : "NATHVM64"  },
+      "i2.2xlarge"  : { "Arch" : "NATHVM64"  },
+      "i2.4xlarge"  : { "Arch" : "NATHVM64"  },
+      "i2.8xlarge"  : { "Arch" : "NATHVM64"  },
+      "d2.xlarge"   : { "Arch" : "NATHVM64"  },
+      "d2.2xlarge"  : { "Arch" : "NATHVM64"  },
+      "d2.4xlarge"  : { "Arch" : "NATHVM64"  },
+      "d2.8xlarge"  : { "Arch" : "NATHVM64"  },
+      "hi1.4xlarge" : { "Arch" : "NATHVM64"  },
+      "hs1.8xlarge" : { "Arch" : "NATHVM64"  },
+      "cr1.8xlarge" : { "Arch" : "NATHVM64"  },
+      "cc2.8xlarge" : { "Arch" : "NATHVM64"  }
+    }
+,
+    "AWSRegionArch2AMI" : {
+      "us-east-1"        : {"PV64" : "ami-5fb8c835", "HVM64" : "ami-60b6c60a", "HVMG2" : "ami-e998ea83"},
+      "us-west-2"        : {"PV64" : "ami-d93622b8", "HVM64" : "ami-f0091d91", "HVMG2" : "ami-315f4850"},
+      "us-west-1"        : {"PV64" : "ami-56ea8636", "HVM64" : "ami-d5ea86b5", "HVMG2" : "ami-943956f4"},
+      "eu-west-1"        : {"PV64" : "ami-95e33ce6", "HVM64" : "ami-bff32ccc", "HVMG2" : "ami-83fd23f0"},
+      "eu-central-1"     : {"PV64" : "ami-794a5915", "HVM64" : "ami-bc5b48d0", "HVMG2" : "ami-ba1a09d6"},
+      "ap-northeast-1"   : {"PV64" : "ami-393c1957", "HVM64" : "ami-383c1956", "HVMG2" : "ami-08e5c166"},
+      "ap-southeast-1"   : {"PV64" : "ami-34bd7a57", "HVM64" : "ami-c9b572aa", "HVMG2" : "ami-5a15d239"},
+      "ap-southeast-2"   : {"PV64" : "ami-ced887ad", "HVM64" : "ami-48d38c2b", "HVMG2" : "ami-0c1a446f"},
+      "sa-east-1"        : {"PV64" : "ami-7d15ad11", "HVM64" : "ami-6817af04", "HVMG2" : "NOT_SUPPORTED"},
+      "cn-north-1"       : {"PV64" : "ami-18ac6575", "HVM64" : "ami-43a36a2e", "HVMG2" : "NOT_SUPPORTED"}
+    }
+
+  },
+        
+        
+        "Resources": {
+            "vpcid": {
+                "Type": "AWS::EC2::VPC",
+                "Properties": {
+                    "CidrBlock": "10.0.0.0/16",
+                    "InstanceTenancy": "default",
+                    "EnableDnsSupport": "true",
+                    "EnableDnsHostnames": "true",
+                    "Tags": [
+                        {
+                            "Key": "Name",
+                            "Value": {
+                                "Ref": "VpcNameParameter"
+                            }
+                        }
+                    ]
+                }
+            },
+            "1aPublicSubnet": {
+                "Type": "AWS::EC2::Subnet",
+                "Properties": {
+                    "CidrBlock": "10.0.0.0/24",
+                    "AvailabilityZone": "eu-west-1a",
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "1bPublicSubnet": {
+                "Type": "AWS::EC2::Subnet",
+                "Properties": {
+                    "CidrBlock": "10.0.1.0/24",
+                    "AvailabilityZone": "eu-west-1b",
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "1aDispatcherSubnet": {
+                "Type": "AWS::EC2::Subnet",
+                "Properties": {
+                    "CidrBlock": "10.0.4.0/24",
+                    "AvailabilityZone": "eu-west-1a",
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "1bDispatcherSubnet": {
+                "Type": "AWS::EC2::Subnet",
+                "Properties": {
+                    "CidrBlock": "10.0.5.0/24",
+                    "AvailabilityZone": "eu-west-1b",
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "1aPublisherLiveSubnet": {
+                "Type": "AWS::EC2::Subnet",
+                "Properties": {
+                    "CidrBlock": "10.0.8.0/24",
+                    "AvailabilityZone": "eu-west-1a",
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "1bPublisherLiveSubnet": {
+                "Type": "AWS::EC2::Subnet",
+                "Properties": {
+                    "CidrBlock": "10.0.9.0/24",
+                    "AvailabilityZone": "eu-west-1b",
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "1aPublisherStagingSubnet": {
+                "Type": "AWS::EC2::Subnet",
+                "Properties": {
+                    "CidrBlock": "10.0.12.0/24",
+                    "AvailabilityZone": "eu-west-1a",
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "1bPublisherStagingSubnet": {
+                "Type": "AWS::EC2::Subnet",
+                "Properties": {
+                    "CidrBlock": "10.0.17.0/24",
+                    "AvailabilityZone": "eu-west-1b",
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "1aAuthorSubnet": {
+                "Type": "AWS::EC2::Subnet",
+                "Properties": {
+                    "CidrBlock": "10.0.16.0/24",
+                    "AvailabilityZone": "eu-west-1a",
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "1bAuthorSubnet": {
+                "Type": "AWS::EC2::Subnet",
+                "Properties": {
+                    "CidrBlock": "10.0.13.0/24",
+                    "AvailabilityZone": "eu-west-1b",
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "igwc179e2a4": {
+                "Type": "AWS::EC2::InternetGateway",
+                "Properties": {}
+            },
+            "dopt70509915": {
+                "Type": "AWS::EC2::DHCPOptions",
+                "Properties": {
+                    "DomainName": "eu-west-1.compute.internal",
+                    "DomainNameServers": [
+                        "AmazonProvidedDNS"
+                    ]
+                }
+            },
+            "acl7fa5991a": {
+                "Type": "AWS::EC2::NetworkAcl",
+                "Properties": {
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "rtbbb6a6ede": {
+                "Type": "AWS::EC2::RouteTable",
+                "Properties": {
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "rtbba6a6edf": {
+                "Type": "AWS::EC2::RouteTable",
+                "Properties": {
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "elbPublicLoadBalancer": {
+                "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+                "Properties": {
+                    "Policies": [
+                        {
+                            "PolicyName": "AWSConsole-SSLNegotiationPolicy-PublicLoadBalancer-1451403944068",
+                            "PolicyType": "SSLNegotiationPolicyType",
+                            "Attributes": [
+                                {
+                                    "Name": "Reference-Security-Policy",
+                                    "Value": "ELBSecurityPolicy-2015-05"
+                                }
+                            ]
+                        }
+                    ],
+                    "Subnets": [
+                        {
+                            "Ref": "1aPublicSubnet"
+                        },
+                        {
+                            "Ref": "1bPublicSubnet"
+                        }
+                    ],
+                    "HealthCheck": {
+                        "HealthyThreshold": "10",
+                        "Interval": "30",
+                        "Target": "HTTP:80/index.html",
+                        "Timeout": "5",
+                        "UnhealthyThreshold": "2"
+                    },
+                    "ConnectionDrainingPolicy": {
+                        "Enabled": "true",
+                        "Timeout": "300"
+                    },
+                    "ConnectionSettings": {
+                        "IdleTimeout": "60"
+                    },
+                    "CrossZone": "true",
+                    "SecurityGroups": [
+                        {
+                            "Ref": "sgWebServerSG"
+                        }
+                    ],
+                    "Listeners": [
+                        {
+                            "InstancePort": "80",
+                            "LoadBalancerPort": "80",
+                            "Protocol": "HTTP",
+                            "InstanceProtocol": "HTTP"
+                        },
+                        {
+                            "InstancePort": "80",
+                            "LoadBalancerPort": "443",
+                            "Protocol": "HTTPS",
+                            "InstanceProtocol": "HTTP",
+                            "SSLCertificateId": "arn:aws:iam::873620393515:server-certificate/sadasdsad",
+                            "PolicyNames": [
+                                "AWSConsole-SSLNegotiationPolicy-PublicLoadBalancer-1451403944068"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "sgWebServerSG": {
+                "Type": "AWS::EC2::SecurityGroup",
+                "Properties": {
+                    "GroupDescription": "Security Group for the WebServer",
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    }
+                }
+            },
+            "acl1": {
+                "Type": "AWS::EC2::NetworkAclEntry",
+                "Properties": {
+                    "CidrBlock": "0.0.0.0/0",
+                    "Egress": "true",
+                    "Protocol": "-1",
+                    "RuleAction": "allow",
+                    "RuleNumber": "100",
+                    "NetworkAclId": {
+                        "Ref": "acl7fa5991a"
+                    }
+                }
+            },
+            "acl2": {
+                "Type": "AWS::EC2::NetworkAclEntry",
+                "Properties": {
+                    "CidrBlock": "0.0.0.0/0",
+                    "Protocol": "-1",
+                    "RuleAction": "allow",
+                    "RuleNumber": "100",
+                    "NetworkAclId": {
+                        "Ref": "acl7fa5991a"
+                    }
+                }
+            },
+            "1aPublicSubnetAclAss": {
+                "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+                "Properties": {
+                    "NetworkAclId": {
+                        "Ref": "acl7fa5991a"
+                    },
+                    "SubnetId": {
+                        "Ref": "1aPublicSubnet"
+                    }
+                }
+            },
+            "1bPublicSubnetAclAss": {
+                "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+                "Properties": {
+                    "NetworkAclId": {
+                        "Ref": "acl7fa5991a"
+                    },
+                    "SubnetId": {
+                        "Ref": "1bPublicSubnet"
+                    }
+                }
+            },
+            "1aDispatcherSubnetAclAss": {
+                "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+                "Properties": {
+                    "NetworkAclId": {
+                        "Ref": "acl7fa5991a"
+                    },
+                    "SubnetId": {
+                        "Ref": "1aDispatcherSubnet"
+                    }
+                }
+            },
+            "1bDispatcherSubnetAclAss": {
+                "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+                "Properties": {
+                    "NetworkAclId": {
+                        "Ref": "acl7fa5991a"
+                    },
+                    "SubnetId": {
+                        "Ref": "1bDispatcherSubnet"
+                    }
+                }
+            },
+            "1aPublisherLiveSubnetAclAss": {
+                "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+                "Properties": {
+                    "NetworkAclId": {
+                        "Ref": "acl7fa5991a"
+                    },
+                    "SubnetId": {
+                        "Ref": "1aPublisherLiveSubnet"
+                    }
+                }
+            },
+            "1bPublisherLiveSubnetAclAss": {
+                "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+                "Properties": {
+                    "NetworkAclId": {
+                        "Ref": "acl7fa5991a"
+                    },
+                    "SubnetId": {
+                        "Ref": "1bPublisherLiveSubnet"
+                    }
+                }
+            },
+            "1aPublisherStagingAclAss": {
+                "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+                "Properties": {
+                    "NetworkAclId": {
+                        "Ref": "acl7fa5991a"
+                    },
+                    "SubnetId": {
+                        "Ref": "1aPublisherStagingSubnet"
+                    }
+                }
+            },
+            "1bPublisherStagingAclAss": {
+                "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+                "Properties": {
+                    "NetworkAclId": {
+                        "Ref": "acl7fa5991a"
+                    },
+                    "SubnetId": {
+                        "Ref": "1bPublisherStagingSubnet"
+                    }
+                }
+            },
+            "1bAuthorSubnetAclAss": {
+                "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+                "Properties": {
+                    "NetworkAclId": {
+                        "Ref": "acl7fa5991a"
+                    },
+                    "SubnetId": {
+                        "Ref": "1bAuthorSubnet"
+                    }
+                }
+            },
+            "1aAuthorSubnetAclAss": {
+                "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+                "Properties": {
+                    "NetworkAclId": {
+                        "Ref": "acl7fa5991a"
+                    },
+                    "SubnetId": {
+                        "Ref": "1aAuthorSubnet"
+                    }
+                }
+            },
+            "gw1": {
+                "Type": "AWS::EC2::VPCGatewayAttachment",
+                "Properties": {
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    },
+                    "InternetGatewayId": {
+                        "Ref": "igwc179e2a4"
+                    }
+                }
+            },
+            "subnetroute2": {
+                "Type": "AWS::EC2::SubnetRouteTableAssociation",
+                "Properties": {
+                    "RouteTableId": {
+                        "Ref": "rtbba6a6edf"
+                    },
+                    "SubnetId": {
+                        "Ref": "1bPublicSubnet"
+                    }
+                }
+            },
+            "subnetroute3": {
+                "Type": "AWS::EC2::SubnetRouteTableAssociation",
+                "Properties": {
+                    "RouteTableId": {
+                        "Ref": "rtbba6a6edf"
+                    },
+                    "SubnetId": {
+                        "Ref": "1aPublicSubnet"
+                    }
+                }
+            },
+            "route1": {
+                "Type": "AWS::EC2::Route",
+                "Properties": {
+                    "DestinationCidrBlock": "0.0.0.0/0",
+                    "RouteTableId": {
+                        "Ref": "rtbba6a6edf"
+                    },
+                    "GatewayId": {
+                        "Ref": "igwc179e2a4"
+                    }
+                },
+                "DependsOn": "gw1",
+                "Metadata": {
+                    "AWS::CloudFormation::Designer": {
+                        "id": "e7205cef-6f5a-4ac0-a622-c36d65946cd9"
+                    }
+                }
+            },
+            "dchpassoc1": {
+                "Type": "AWS::EC2::VPCDHCPOptionsAssociation",
+                "Properties": {
+                    "VpcId": {
+                        "Ref": "vpcid"
+                    },
+                    "DhcpOptionsId": {
+                        "Ref": "dopt70509915"
+                    }
+                }
+            },
+            "ingress1": {
+                "Type": "AWS::EC2::SecurityGroupIngress",
+                "Properties": {
+                    "GroupId": {
+                        "Ref": "sgWebServerSG"
+                    },
+                    "IpProtocol": "tcp",
+                    "FromPort": "80",
+                    "ToPort": "80",
+                    "CidrIp": "0.0.0.0/0"
+                }
+            },
+            "ingress2": {
+                "Type": "AWS::EC2::SecurityGroupIngress",
+                "Properties": {
+                    "GroupId": {
+                        "Ref": "sgWebServerSG"
+                    },
+                    "IpProtocol": "tcp",
+                    "FromPort": "22",
+                    "ToPort": "22",
+                    "CidrIp": "0.0.0.0/0"
+                }
+            },
+            "ingress3": {
+                "Type": "AWS::EC2::SecurityGroupIngress",
+                "Properties": {
+                    "GroupId": {
+                        "Ref": "sgWebServerSG"
+                    },
+                    "IpProtocol": "tcp",
+                    "FromPort": "443",
+                    "ToPort": "443",
+                    "CidrIp": "0.0.0.0/0"
+                }
+            },
+            "egress1": {
+                "Type": "AWS::EC2::SecurityGroupEgress",
+                "Properties": {
+                    "GroupId": {
+                        "Ref": "sgWebServerSG"
+                    },
+                    "IpProtocol": "-1",
+                    "CidrIp": "0.0.0.0/0"
+                }
+            },
+            "1aPublicInstance": {
+                "Type": "AWS::EC2::Instance",
+                "Properties": {
+                    "SubnetId": {
+                        "Ref": "1aPublicSubnet"
+                    },
+                    "ImageId": { 
+                        "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
+                          { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
+                    "InstanceType"   : { "Ref" : "InstanceType" }
+                }
+            }
+        }
+    }
