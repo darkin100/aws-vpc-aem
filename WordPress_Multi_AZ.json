@@ -2,11 +2,6 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "AWS CloudFormation Sample Template WordPress_Multi_AZ: WordPress is web software you can use to create a beautiful website or blog. This template installs a highly-available, scalable WordPress deployment using a multi-az Amazon RDS database instance for storage. It demonstrates using the AWS CloudFormation bootstrap scripts to deploy WordPress. **WARNING** This template creates an Amazon EC2 instance, an Elastic Load Balancer and an Amazon RDS database instance. You will be billed for the AWS resources used if you create a stack from this template.",
     "Parameters": {
-        "KeyName": {
-            "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instances",
-            "Type": "AWS::EC2::KeyPair::KeyName",
-            "ConstraintDescription": "must be the name of an existing EC2 KeyPair."
-        },
         "InstanceType": {
             "Description": "WebServer EC2 instance type",
             "Type": "String",
@@ -780,9 +775,6 @@
                         "Ref": "WebServerSecurityGroup"
                     }
                 ],
-                "KeyName": {
-                    "Ref": "KeyName"
-                },
                 "UserData": {
                     "Fn::Base64": {
                         "Fn::Join": [
