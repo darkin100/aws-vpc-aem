@@ -363,25 +363,41 @@
 	     					"/etc/aem/" : { "Ref" : "AEMDownloadUrl" }
 	   					},
          				"commands" : {
-               				"01_mkdir" : {
+               				"01_mkdir_author" : {
                    				"command" : "mkdir author",
                        			"cwd" : "/etc/aem/"
                      		},
-                            "02_copy_author" : {
+                            "02_mkdir_publish" : {
+                   				"command" : "mkdir publish",
+                       			"cwd" : "/etc/aem/"
+                     		},
+                            "03_copy_author" : {
                    				"command" : "cp AEM_6.1_Quickstart.jar author",
                        			"cwd" : "/etc/aem/"
                      		},
-               				"03_unpack" : {
+                            "04_copy_publish" : {
+                   				"command" : "cp AEM_6.1_Quickstart.jar publish",
+                       			"cwd" : "/etc/aem/"
+                     		},
+               				"05_author_unpack" : {
 				               	"command" : "java -jar AEM_6.1_Quickstart.jar -unpack",
                     			"cwd" : "/etc/aem/author/"
+				            },
+                            "06_publish_unpack" : {
+				               	"command" : "java -jar AEM_6.1_Quickstart.jar -unpack",
+                    			"cwd" : "/etc/aem/publish/"
 				            }
                			}
                 	},
                  	"Run" : {
                      	"commands" : {
                     		"01_start_author" : {
-		                		"command" : "CQ_PORT=80 ./start",
+		                		"command" : "./start",
                     			"cwd" : "/etc/aem/author/crx-quickstart/bin/"
+		              		},
+                            "02_start_publisher" : {
+		                		"command" : "CQ_PORT=80 CQ_RUNMODE=publish ./start",
+                    			"cwd" : "/etc/aem/publish/crx-quickstart/bin/"
 		              		}
                         }                     
                     }               
