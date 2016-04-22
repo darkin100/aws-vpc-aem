@@ -1,5 +1,8 @@
 # aws-vpc-aem
 
-A basic AWS Cloud Formation Script that can be used to build out a VPC for hosting Adobe AEM.
+A set of AWS Cloud Formation Scripts for launching up Adobe AEM Stacks using the Adobe AEM Quickstart Jar.
 
-The VPC separates out the different AEM instances using dedicated subnets, with an Elastic Load balancer to distribute traffic across separate availability zones within a single region. 
+```html
+<a href="https://console.aws.amazon.com/cloudformation/home?#/stacks/new?stackName=aemsingle&templateURL=https://raw.githubusercontent.com/darkin100/aws-vpc-aem/master/single_aem_instance.template">https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png<a>    
+```
+
