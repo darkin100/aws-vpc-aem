@@ -1,7 +1,7 @@
 {
   "AWSTemplateFormatVersion" : "2010-09-09",
 
-  "Description" : "AWS CloudFormation Sample Template EC2InstanceWithSecurityGroupSample: Create an Amazon EC2 instance running the Amazon Linux AMI. The AMI is chosen based on the region in which the stack is run. This example creates an EC2 security group for the instance to give you SSH access. **WARNING** This template creates an Amazon EC2 instance. You will be billed for the AWS resources used if you create a stack from this template.",
+  "Description" : "AWS CloudFormation Sample Template Single AEM Instance: Create an Amazon EC2 instance running the Amazon Linux AMI with a Trial version of Adobe AEM configured in a author, publish format. The AMI is chosen based on the region in which the stack is run. This example creates an EC2 security group for the instance to give you SSH access. **WARNING** This template creates an Amazon EC2 instance. You will be billed for the AWS resources used if you create a stack from this template.",
 
   "Parameters" : {
     "KeyName": {
@@ -148,8 +148,8 @@
       "hs1.8xlarge" : { "Arch" : "NATHVM64"  },
       "cr1.8xlarge" : { "Arch" : "NATHVM64"  },
       "cc2.8xlarge" : { "Arch" : "NATHVM64"  }
-    }
-,
+    },
+    
     "AWSRegionArch2AMI" : {
       "us-east-1"        : {"PV64" : "ami-22111148", "HVM64" : "ami-08111162", "HVMG2" : "ami-ebcec381"},
       "us-west-2"        : {"PV64" : "ami-792bc219", "HVM64" : "ami-c229c0a2", "HVMG2" : "ami-0f28c06f"},
@@ -162,18 +162,200 @@
       "ap-southeast-2"   : {"PV64" : "ami-f5210196", "HVM64" : "ami-f2210191", "HVMG2" : "ami-88c1e1eb"},
       "sa-east-1"        : {"PV64" : "ami-661e930a", "HVM64" : "ami-1e159872", "HVMG2" : "NOT_SUPPORTED"},
       "cn-north-1"       : {"PV64" : "ami-08ef2465", "HVM64" : "ami-49e22924", "HVMG2" : "NOT_SUPPORTED"}
+    },
+    
+    "Region2Principal" : {
+      "us-east-1"      : { "EC2Principal" : "ec2.amazonaws.com", "OpsWorksPrincipal" : "opsworks.amazonaws.com" },
+      "us-west-2"      : { "EC2Principal" : "ec2.amazonaws.com", "OpsWorksPrincipal" : "opsworks.amazonaws.com" },
+      "us-west-1"      : { "EC2Principal" : "ec2.amazonaws.com", "OpsWorksPrincipal" : "opsworks.amazonaws.com" },
+      "eu-west-1"      : { "EC2Principal" : "ec2.amazonaws.com", "OpsWorksPrincipal" : "opsworks.amazonaws.com" },
+      "ap-southeast-1" : { "EC2Principal" : "ec2.amazonaws.com", "OpsWorksPrincipal" : "opsworks.amazonaws.com" },
+      "ap-northeast-1" : { "EC2Principal" : "ec2.amazonaws.com", "OpsWorksPrincipal" : "opsworks.amazonaws.com" },
+      "ap-northeast-2" : { "EC2Principal" : "ec2.amazonaws.com", "OpsWorksPrincipal" : "opsworks.amazonaws.com" },
+      "ap-southeast-2" : { "EC2Principal" : "ec2.amazonaws.com", "OpsWorksPrincipal" : "opsworks.amazonaws.com" },
+      "sa-east-1"      : { "EC2Principal" : "ec2.amazonaws.com", "OpsWorksPrincipal" : "opsworks.amazonaws.com" },
+      "cn-north-1"     : { "EC2Principal" : "ec2.amazonaws.com.cn", "OpsWorksPrincipal" : "opsworks.amazonaws.com.cn" },
+      "eu-central-1"   : { "EC2Principal" : "ec2.amazonaws.com", "OpsWorksPrincipal" : "opsworks.amazonaws.com" }
+    },
+    
+    "Region2ARNPrefix": {
+      "us-east-1"      : { "ARNPrefix": "arn:aws:" },
+      "us-west-1"      : { "ARNPrefix": "arn:aws:" },
+      "us-west-2"      : { "ARNPrefix": "arn:aws:" },
+      "eu-west-1"      : { "ARNPrefix": "arn:aws:" },
+      "ap-northeast-1" : { "ARNPrefix": "arn:aws:" },
+      "ap-northeast-2" : { "ARNPrefix": "arn:aws:" },
+      "ap-southeast-1" : { "ARNPrefix": "arn:aws:" },
+      "ap-southeast-2" : { "ARNPrefix": "arn:aws:" },
+      "sa-east-1"      : { "ARNPrefix": "arn:aws:" },
+      "cn-north-1"     : { "ARNPrefix": "arn:aws-cn:" },
+      "eu-central-1"   : { "ARNPrefix": "arn:aws:" }
     }
   },
 
   "Resources" : {
-		"AemInstance": {  
+		
+    	"LogRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [ {
+            "Effect": "Allow",
+            "Principal": { "Service": [{ "Fn::FindInMap" : ["Region2Principal", {"Ref" : "AWS::Region"}, "EC2Principal"]}] },
+            "Action": [ "sts:AssumeRole" ]
+        } ] },
+        "Path": "/",
+        "Policies": [ {
+          "PolicyName": "LogRolePolicy",
+          "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [ {
+              "Effect": "Allow",
+              "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents", "logs:DescribeLogStreams"],
+              "Resource": [ { "Fn::Join" : ["", [ { "Fn::FindInMap" : ["Region2ARNPrefix", {"Ref" : "AWS::Region"}, "ARNPrefix"] }, 
+                            "logs:*:*:*" ]]}]
+          } ] }
+        } ]
+      }
+    },
+
+    "LogRoleInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [ { "Ref": "LogRole" } ]
+      }
+    },
+
+    "CloudFormationLogs": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "RetentionInDays": 7
+      }
+    },    
+    
+    
+    	"AemInstance": {  
 			"Type": "AWS::EC2::Instance",
 			"Metadata" : {
      			"AWS::CloudFormation::Init" : {
           			"configSets" : {
-            				"InstallAndRun" : [ "Install","Run" ]
+            				"InstallAndRun" : [ "Config","InstallLogs","InstallAem","Run" ]
           				},
-              		"Install" : {
+              		"Config" : {
+                		"files" : {
+			              "/etc/cfn/cfn-hup.conf" : {
+			                "content" : { "Fn::Join" : ["", [
+			                  "[main]\n",
+			                  "stack=", { "Ref" : "AWS::StackId" }, "\n",
+			                  "region=", { "Ref" : "AWS::Region" }, "\n"
+			                ]]},
+			                "mode"    : "000400",
+			                "owner"   : "root",
+			                "group"   : "root"
+			              },
+			
+			              "/etc/cfn/hooks.d/cfn-auto-reloader.conf" : {
+			                "content": { "Fn::Join" : ["", [
+			                  "[cfn-auto-reloader-hook]\n",
+			                  "triggers=post.update\n",
+			                  "path=Resources.WebServerInstance.Metadata.AWS::CloudFormation::Init\n",
+			                  "action=/opt/aws/bin/cfn-init -v ",
+			                  "         --stack ", { "Ref" : "AWS::StackName" },
+			                  "         --resource WebServerInstance ",
+			                  "         --configsets install_all ",
+			                  "         --region ", { "Ref" : "AWS::Region" }, "\n",
+			                  "runas=root\n"
+			                ]]}
+			              }
+			            },
+			
+			            "services" : {
+			              "sysvinit" : {
+			                "cfn-hup" : { "enabled" : "true", "ensureRunning" : "true",
+			                              "files" : ["/etc/cfn/cfn-hup.conf", "/etc/cfn/hooks.d/cfn-auto-reloader.conf"]}
+			              }
+			            }
+                  	}, 
+                   	"InstallLogs" : {
+                      "packages" : {
+			              "yum" : {
+			                "awslogs" : []
+			              }
+			            },
+			
+			            "files": {
+			              "/etc/awslogs/awslogs.conf": {
+			                "content": { "Fn::Join": [ "", [
+			                  "[general]\n",
+			                  "state_file= /var/awslogs/state/agent-state\n",
+			
+			                  "[/var/log/cloud-init.log]\n",
+			                  "file = /var/log/cloud-init.log\n",
+			                  "log_group_name = ", { "Ref": "CloudFormationLogs" }, "\n",
+			                  "log_stream_name = {instance_id}/cloud-init.log\n",
+			                  "datetime_format = \n",
+			
+			                  "[/var/log/cloud-init-output.log]\n",
+			                  "file = /var/log/cloud-init-output.log\n",
+			                  "log_group_name = ", { "Ref": "CloudFormationLogs" }, "\n",
+			                  "log_stream_name = {instance_id}/cloud-init-output.log\n",
+			                  "datetime_format = \n",
+			
+			                  "[/var/log/cfn-init.log]\n",
+			                  "file = /var/log/cfn-init.log\n",
+			                  "log_group_name = ", { "Ref": "CloudFormationLogs" }, "\n",
+			                  "log_stream_name = {instance_id}/cfn-init.log\n",
+			                  "datetime_format = \n",
+			
+			                  "[/var/log/cfn-hup.log]\n",
+			                  "file = /var/log/cfn-hup.log\n",
+			                  "log_group_name = ", { "Ref": "CloudFormationLogs" }, "\n",
+			                  "log_stream_name = {instance_id}/cfn-hup.log\n",
+			                  "datetime_format = \n",
+			
+			                  "[/var/log/cfn-wire.log]\n",
+			                  "file = /var/log/cfn-wire.log\n",
+			                  "log_group_name = ", { "Ref": "CloudFormationLogs" }, "\n",
+			                  "log_stream_name = {instance_id}/cfn-wire.log\n",
+			                  "datetime_format = \n",
+			
+			                  "[/var/log/httpd]\n",
+			                  "file = /var/log/httpd/*\n",
+			                  "log_group_name = ", { "Ref": "CloudFormationLogs" }, "\n",
+			                  "log_stream_name = {instance_id}/httpd\n",
+			                  "datetime_format = %d/%b/%Y:%H:%M:%S\n"
+			                ] ] },
+			                "mode": "000444",
+			                "owner": "root",
+			                "group": "root"
+			              },
+			              "/etc/awslogs/awscli.conf": {
+			                "content": { "Fn::Join": [ "", [
+			                  "[plugins]\n",
+			                  "cwlogs = cwlogs\n",
+			                  "[default]\n",
+			                  "region = ", { "Ref" : "AWS::Region" }, "\n"
+			                ] ] },
+			                "mode": "000444",
+			                "owner": "root",
+			                "group": "root"
+			              }
+                 		},
+			            "commands" : {
+			              "01_create_state_directory" : {
+			                "command" : "mkdir -p /var/awslogs/state"
+			              }
+			            },
+			            "services" : {
+			              "sysvinit" : {
+			                "awslogs"    : { "enabled" : "true", "ensureRunning" : "true",
+			                                 "files" : [ "/etc/awslogs/awslogs.conf" ] }
+			              }
+			            }
+                    }, 
+              		"InstallAem" : {
                   		"packages" : {
               				"yum" : {}
              			},
@@ -181,7 +363,7 @@
 	     					"/etc/aem/" : { "Ref" : "AEMDownloadUrl" }
 	   					},
          				"commands" : {
-               				"01_unpack" : {
+               				"03_unpack" : {
 				               	"command" : "java -jar AEM_6.1_Quickstart.jar -unpack",
                     			"cwd" : "/etc/aem/"
 				            }
@@ -189,7 +371,7 @@
                 	},
                  	"Run" : {
                      	"commands" : {
-                    		"01_start_ame" : {
+                    		"01_start_author" : {
 		                		"command" : "CQ_PORT=80 ./start",
                     			"cwd" : "/etc/aem/crx-quickstart/bin/"
 		              		}
@@ -201,7 +383,7 @@
 			    "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
 			                      { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
 			    "InstanceType"   : { "Ref" : "InstanceType" },
-			    "SecurityGroups" : [ {"Ref" : "InstanceSecurityGroup"} ],
+			    "SecurityGroups" : [ {"Ref" : "AemInstanceSecurityGroup"} ],
 			    "KeyName"        : { "Ref" : "KeyName" },
 			    "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
 			         "#!/bin/bash -xe\n",
@@ -221,17 +403,18 @@
 			  },
 	      "CreationPolicy" : {
 	        "ResourceSignal" : {
-	          "Timeout" : "PT15M"
+	          "Timeout" : "PT5M"
 	        }
 	      }
     },
 
-    "InstanceSecurityGroup" : {
+    "AemInstanceSecurityGroup" : {
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
         "GroupDescription" : "Enable HTTP access via port 80 locked down to the load balancer + SSH access",
         "SecurityGroupIngress" : [ 
           {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0"},
+          {"IpProtocol" : "tcp", "FromPort" : "4502", "ToPort" : "4502", "CidrIp" : "0.0.0.0/0"},
           {"IpProtocol" : "tcp","FromPort" : "22","ToPort" : "22","CidrIp" : { "Ref" : "SSHLocation"}
         } ]
       }
