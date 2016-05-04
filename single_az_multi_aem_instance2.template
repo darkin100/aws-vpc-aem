@@ -192,51 +192,81 @@
   },
   
   "Resources": {
-    "vpcaem": {
+    "vpc-aem": {
       "Type": "AWS::EC2::VPC",
       "Properties": {
         "CidrBlock": "10.0.0.0/16",
         "InstanceTenancy": "default",
         "EnableDnsSupport": "true",
-        "EnableDnsHostnames": "false"
+        "EnableDnsHostnames": "false",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "aem-dev"
+          }
+        ]
       }
     },
-    "subnetauth": {
+    "subnet-auth": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.5.0/24",
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
-          "Ref": "vpcaem"
-        }
+          "Ref": "vpc-aem"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "auth"
+          }
+        ]
       }
     },
-    "subnetpub": {
+    "subnet-pub": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.3.0/24",
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
-          "Ref": "vpcaem"
-        }
+          "Ref": "vpc-aem"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "pub"
+          }
+        ]
       }
     },
-    "subnetdisp": {
+    "subnet-disp": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "CidrBlock": "10.0.1.0/24",
         "AvailabilityZone": "eu-west-1a",
         "VpcId": {
-          "Ref": "vpcaem"
-        }
+          "Ref": "vpc-aem"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "disp"
+          }
+        ]
       }
     },
-    "igwaem": {
+    "igw-aem": {
       "Type": "AWS::EC2::InternetGateway",
       "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "aem-dev-ig"
+          }
+        ]
       }
     },
-    "doptaem": {
+    "dopt-aem": {
       "Type": "AWS::EC2::DHCPOptions",
       "Properties": {
         "DomainName": "eu-west-1.compute.internal",
@@ -245,19 +275,19 @@
         ]
       }
     },
-    "nacldef": {
+    "nacl-def": {
       "Type": "AWS::EC2::NetworkAcl",
       "Properties": {
         "VpcId": {
-          "Ref": "vpcaem"
+          "Ref": "vpc-aem"
         }
       }
     },
-    "routetableauth": {
+    "routetable-auth": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
         "VpcId": {
-          "Ref": "vpcaem"
+          "Ref": "vpc-aem"
         },
         "Tags": [
           {
@@ -267,19 +297,19 @@
         ]
       }
     },
-    "routetabledef": {
+    "routetable-def": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
         "VpcId": {
-          "Ref": "vpcaem"
+          "Ref": "vpc-aem"
         }
       }
     },
-    "routetablepub": {
+    "routetable-pub": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
         "VpcId": {
-          "Ref": "vpcaem"
+          "Ref": "vpc-aem"
         },
         "Tags": [
           {
@@ -289,11 +319,11 @@
         ]
       }
     },
-    "routetabledisp": {
+    "routetable-disp": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
         "VpcId": {
-          "Ref": "vpcaem"
+          "Ref": "vpc-aem"
         },
         "Tags": [
           {
@@ -303,74 +333,146 @@
         ]
       }
     },
-    "ec2pub": {
+    "ec2-pub": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
-        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
-			                      { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
-        "InstanceType"   : { "Ref" : "InstanceType" },
-        "KeyName"        : { "Ref" : "KeyName" }
-      }
-    },
-    "ec2disp": {
-      "Type": "AWS::EC2::Instance",
-      "Properties": {
-        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
-			                      { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
-        "InstanceType"   : { "Ref" : "InstanceType" },
-        "KeyName"        : { "Ref" : "KeyName" }
-      }
-    },
-    "ec2auth": {
-     "Type": "AWS::EC2::Instance",
-      "Properties": {
-        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
-			                      { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
-        "InstanceType"   : { "Ref" : "InstanceType" },
-        "KeyName"        : { "Ref" : "KeyName" }
-      }
-    },
-    "sgauth": {
-      "Type": "AWS::EC2::SecurityGroup",
-      "Properties": {
-        "GroupDescription": "sgauth",
-        "VpcId": {
-          "Ref": "vpcaem"
-        },
-        "Tags": [
+        "DisableApiTermination": "false",
+        "InstanceInitiatedShutdownBehavior": "stop",
+        "ImageId": "ami-31328842",
+        "InstanceType": "t2.micro",
+        "KeyName": "aemsingle",
+        "Monitoring": "false",
+        "NetworkInterfaces": [
           {
-            "Key": "Name",
-            "Value": "sgauth"
+            "DeleteOnTermination": "true",
+            "Description": "Primary network interface",
+            "DeviceIndex": 0,
+            "SubnetId": {
+              "Ref": "subnet-pub"
+            },
+            "PrivateIpAddresses": [
+              {
+                "PrivateIpAddress": "10.0.3.228",
+                "Primary": "true"
+              }
+            ],
+            "GroupSet": [
+              {
+                "Ref": "sp-pub"
+              }
+            ],
+            "AssociatePublicIpAddress": "true"
           }
         ]
       }
     },
-    "sgdisp": {
-      "Type": "AWS::EC2::SecurityGroup",
+    "ec2-disp": {
+      "Type": "AWS::EC2::Instance",
       "Properties": {
-        "GroupDescription": "sgdisp",
-        "VpcId": {
-          "Ref": "vpcaem"
-        },
-        "Tags": [
+        "DisableApiTermination": "false",
+        "InstanceInitiatedShutdownBehavior": "stop",
+        "ImageId": "ami-31328842",
+        "InstanceType": "t2.micro",
+        "KeyName": "aemsingle",
+        "Monitoring": "false",
+        "NetworkInterfaces": [
           {
-            "Key": "Name",
-            "Value": "sgdisp"
+            "DeleteOnTermination": "true",
+            "Description": "Primary network interface",
+            "DeviceIndex": 0,
+            "SubnetId": {
+              "Ref": "subnet-disp"
+            },
+            "PrivateIpAddresses": [
+              {
+                "PrivateIpAddress": "10.0.1.48",
+                "Primary": "true"
+              }
+            ],
+            "GroupSet": [
+              {
+                "Ref": "sg-disp"
+              }
+            ],
+            "AssociatePublicIpAddress": "true"
           }
         ]
       }
     },
-    "sgpub": {
+    "ec2-auth": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "DisableApiTermination": "false",
+        "InstanceInitiatedShutdownBehavior": "stop",
+        "ImageId": "ami-31328842",
+        "InstanceType": "t2.micro",
+        "KeyName": "aemsingle",
+        "Monitoring": "false",
+        "NetworkInterfaces": [
+          {
+            "DeleteOnTermination": "true",
+            "Description": "Primary network interface",
+            "DeviceIndex": 0,
+            "SubnetId": {
+              "Ref": "subnet-auth"
+            },
+            "PrivateIpAddresses": [
+              {
+                "PrivateIpAddress": "10.0.5.194",
+                "Primary": "true"
+              }
+            ],
+            "GroupSet": [
+              {
+                "Ref": "sg-auth"
+              }
+            ],
+            "AssociatePublicIpAddress": "true"
+          }
+        ]
+      }
+    },
+    "sg-auth": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
-        "GroupDescription": "sgpub",
+        "GroupDescription": "auth-sg",
         "VpcId": {
-          "Ref": "vpcaem"
+          "Ref": "vpc-aem"
         },
         "Tags": [
           {
             "Key": "Name",
-            "Value": "sgpub"
+            "Value": "auth-sg"
+          }
+        ]
+      }
+    },
+    "sg-disp": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "disp-sg",
+        "VpcId": {
+          "Ref": "vpc-aem"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "disp-sg"
+          }
+        ]
+      }
+    },
+    "sp-pub": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "pub-sg",
+        "VpcId": {
+          "Ref": "vpc-aem"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "pub-sg"
           }
         ]
       }
@@ -384,7 +486,7 @@
         "RuleAction": "allow",
         "RuleNumber": "100",
         "NetworkAclId": {
-          "Ref": "nacldef"
+          "Ref": "nacl-def"
         }
       }
     },
@@ -396,155 +498,155 @@
         "RuleAction": "allow",
         "RuleNumber": "100",
         "NetworkAclId": {
-          "Ref": "nacldef"
+          "Ref": "nacl-def"
         }
       }
     },
-    "subnetcalpub": {
+    "subnetcal-pub": {
       "Type": "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties": {
         "NetworkAclId": {
-          "Ref": "nacldef"
+          "Ref": "nacl-def"
         },
         "SubnetId": {
-          "Ref": "subnetpub"
+          "Ref": "subnet-pub"
         }
       }
     },
-    "subnetacldisp": {
+    "subnetacl-disp": {
       "Type": "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties": {
         "NetworkAclId": {
-          "Ref": "nacldef"
+          "Ref": "nacl-def"
         },
         "SubnetId": {
-          "Ref": "subnetdisp"
+          "Ref": "subnet-disp"
         }
       }
     },
-    "subnetaclauth": {
+    "subnetacl-auth": {
       "Type": "AWS::EC2::SubnetNetworkAclAssociation",
       "Properties": {
         "NetworkAclId": {
-          "Ref": "nacldef"
+          "Ref": "nacl-def"
         },
         "SubnetId": {
-          "Ref": "subnetauth"
+          "Ref": "subnet-auth"
         }
       }
     },
-    "gwaem": {
+    "gw-aem": {
       "Type": "AWS::EC2::VPCGatewayAttachment",
       "Properties": {
         "VpcId": {
-          "Ref": "vpcaem"
+          "Ref": "vpc-aem"
         },
         "InternetGatewayId": {
-          "Ref": "igwaem"
+          "Ref": "igw-aem"
         }
       }
     },
-    "subnetrouteauth": {
+    "subnetroute-auth": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
       "Properties": {
         "RouteTableId": {
-          "Ref": "routetableauth"
+          "Ref": "routetable-auth"
         },
         "SubnetId": {
-          "Ref": "subnetauth"
+          "Ref": "subnet-auth"
         }
       }
     },
-    "subnetroutepub": {
+    "subnetroute-pub": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
       "Properties": {
         "RouteTableId": {
-          "Ref": "routetablepub"
+          "Ref": "routetable-pub"
         },
         "SubnetId": {
-          "Ref": "subnetpub"
+          "Ref": "subnet-pub"
         }
       }
     },
-    "subnetroutedisp": {
+    "subnetroute-disp": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
       "Properties": {
         "RouteTableId": {
-          "Ref": "routetabledisp"
+          "Ref": "routetable-disp"
         },
         "SubnetId": {
-          "Ref": "subnetdisp"
+          "Ref": "subnet-disp"
         }
       }
     },
-    "routeauth": {
+    "route-auth": {
       "Type": "AWS::EC2::Route",
       "Properties": {
         "DestinationCidrBlock": "0.0.0.0/0",
         "RouteTableId": {
-          "Ref": "routetableauth"
+          "Ref": "routetable-auth"
         },
         "GatewayId": {
-          "Ref": "igwaem"
+          "Ref": "igw-aem"
         }
       },
-      "DependsOn": "gwaem"
+      "DependsOn": "gw-aem"
     },
-    "routedef": {
+    "route-def": {
       "Type": "AWS::EC2::Route",
       "Properties": {
         "DestinationCidrBlock": "0.0.0.0/0",
         "RouteTableId": {
-          "Ref": "routetabledef"
+          "Ref": "routetable-def"
         },
         "GatewayId": {
-          "Ref": "igwaem"
+          "Ref": "igw-aem"
         }
       },
-      "DependsOn": "gwaem"
+      "DependsOn": "gw-aem"
     },
-    "routepub": {
+    "route-pub": {
       "Type": "AWS::EC2::Route",
       "Properties": {
         "DestinationCidrBlock": "0.0.0.0/0",
         "RouteTableId": {
-          "Ref": "routetablepub"
+          "Ref": "routetable-pub"
         },
         "GatewayId": {
-          "Ref": "igwaem"
+          "Ref": "igw-aem"
         }
       },
-      "DependsOn": "gwaem"
+      "DependsOn": "gw-aem"
     },
-    "routedisp": {
+    "route-disp": {
       "Type": "AWS::EC2::Route",
       "Properties": {
         "DestinationCidrBlock": "0.0.0.0/0",
         "RouteTableId": {
-          "Ref": "routetabledisp"
+          "Ref": "routetable-disp"
         },
         "GatewayId": {
-          "Ref": "igwaem"
+          "Ref": "igw-aem"
         }
       },
-      "DependsOn": "gwaem"
+      "DependsOn": "gw-aem"
     },
-    "dchpaaem": {
+    "dchpa-aem": {
       "Type": "AWS::EC2::VPCDHCPOptionsAssociation",
       "Properties": {
         "VpcId": {
-          "Ref": "vpcaem"
+          "Ref": "vpc-aem"
         },
         "DhcpOptionsId": {
-          "Ref": "doptaem"
+          "Ref": "dopt-aem"
         }
       }
     },
-    "sgiauthtcp22": {
+    "sgi-auth-tcp22": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgauth"
+          "Ref": "sg-auth"
         },
         "IpProtocol": "tcp",
         "FromPort": "22",
@@ -552,11 +654,11 @@
         "CidrIp": "0.0.0.0/0"
       }
     },
-    "sgiauthtcp4502": {
+    "sgi-auth-tcp4502": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgauth"
+          "Ref": "sg-auth"
         },
         "IpProtocol": "tcp",
         "FromPort": "4502",
@@ -564,11 +666,11 @@
         "CidrIp": "0.0.0.0/0"
       }
     },
-    "sgidisptcp80": {
+    "sgi-disp-tcp80": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgdisp"
+          "Ref": "sg-disp"
         },
         "IpProtocol": "tcp",
         "FromPort": "80",
@@ -576,11 +678,11 @@
         "CidrIp": "0.0.0.0/0"
       }
     },
-    "sgidisptcp22": {
+    "sgi-disp-tcp22": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgdisp"
+          "Ref": "sg-disp"
         },
         "IpProtocol": "tcp",
         "FromPort": "22",
@@ -588,11 +690,11 @@
         "CidrIp": "0.0.0.0/0"
       }
     },
-    "sgipubtcp22": {
+    "sgi-pub-tcp22": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgpub"
+          "Ref": "sp-pub"
         },
         "IpProtocol": "tcp",
         "FromPort": "22",
@@ -600,11 +702,11 @@
         "CidrIp": "0.0.0.0/0"
       }
     },
-    "sgipubtcp4502": {
+    "sgi-pub-tcp4502": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgpub"
+          "Ref": "sp-pub"
         },
         "IpProtocol": "tcp",
         "FromPort": "4502",
@@ -612,113 +714,35 @@
         "CidrIp": "0.0.0.0/0"
       }
     },
-    "sgeauth00": {
+    "sge-auth-00": {
       "Type": "AWS::EC2::SecurityGroupEgress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgauth"
+          "Ref": "sg-auth"
         },
         "IpProtocol": "-1",
         "CidrIp": "0.0.0.0/0"
       }
     },
-    "sgedisp00": {
+    "sge-disp-00": {
       "Type": "AWS::EC2::SecurityGroupEgress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgdisp"
+          "Ref": "sg-disp"
         },
         "IpProtocol": "-1",
         "CidrIp": "0.0.0.0/0"
       }
     },
-    "sgedpub00": {
+    "sge-pub-00": {
       "Type": "AWS::EC2::SecurityGroupEgress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgpub"
+          "Ref": "sp-pub"
         },
         "IpProtocol": "-1",
         "CidrIp": "0.0.0.0/0"
       }
-    },
-    
-    "LogRole": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [ {
-            "Effect": "Allow",
-            "Principal": { "Service": [{ "Fn::FindInMap" : ["Region2Principal", {"Ref" : "AWS::Region"}, "EC2Principal"]}] },
-            "Action": [ "sts:AssumeRole" ]
-        } ] },
-        "Path": "/",
-        "Policies": [ {
-          "PolicyName": "LogRolePolicy",
-          "PolicyDocument": {
-            "Version": "2012-10-17",
-            "Statement": [ {
-              "Effect": "Allow",
-              "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents", "logs:DescribeLogStreams"],
-              "Resource": [ { "Fn::Join" : ["", [ { "Fn::FindInMap" : ["Region2ARNPrefix", {"Ref" : "AWS::Region"}, "ARNPrefix"] }, 
-                            "logs:*:*:*" ]]}]
-          } ] }
-        } ]
-      }
-    },
-
-    "LogRoleInstanceProfile": {
-      "Type": "AWS::IAM::InstanceProfile",
-      "Properties": {
-        "Path": "/",
-        "Roles": [ { "Ref": "LogRole" } ]
-      }
-    },
-
-    "CloudFormationLogs": {
-      "Type": "AWS::Logs::LogGroup",
-      "Properties": {
-        "RetentionInDays": 7
-      }
-    }
-  },
-  "Outputs" : {
-    "authinstanceid" : {
-      "Description" : "InstanceId of the newly created Author instance",
-      "Value" : { "Ref" : "ec2auth" }
-    },
-    "authpublicdns" : {
-      "Description" : "Public DNSName of the newly created Author instance",
-      "Value" : { "Fn::GetAtt" : [ "ec2auth", "PublicDnsName" ] }
-    },
-    "authpublicip" : {
-      "Description" : "Public IP address of the newly created Author instance",
-      "Value" : { "Fn::GetAtt" : [ "ec2auth", "PublicIp" ] }
-    },
-    "pubinstanceid" : {
-      "Description" : "InstanceId of the newly created Publisher instance",
-      "Value" : { "Ref" : "ec2pub" }
-    },
-    "pubpublicdns" : {
-      "Description" : "Public DNSName of the newly created Publisher instance",
-      "Value" : { "Fn::GetAtt" : [ "ec2pub", "PublicDnsName" ] }
-    },
-    "pubpublicip" : {
-      "Description" : "Public IP address of the newly created Publisher instance",
-      "Value" : { "Fn::GetAtt" : [ "ec2pub", "PublicIp" ] }
-    },    
-    "dispinstanceid" : {
-      "Description" : "InstanceId of the newly created Dispatcher instance",
-      "Value" : { "Ref" : "ec2disp" }
-    },
-    "disppublicdns" : {
-      "Description" : "Public DNSName of the newly created Dispatcher instance",
-      "Value" : { "Fn::GetAtt" : [ "ec2disp", "PublicDnsName" ] }
-    },
-    "disppublicip" : {
-      "Description" : "Public IP address of the newly created Dispatcher instance",
-      "Value" : { "Fn::GetAtt" : [ "ec2disp", "PublicIp" ] }
     }
   }
 }
