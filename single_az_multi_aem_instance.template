@@ -305,12 +305,197 @@
     },
     "ec2pub": {
       "Type": "AWS::EC2::Instance",
+      "Metadata" : {
+     			"AWS::CloudFormation::Init" : {
+          			"configSets" : {
+            				"InstallAndRun" : [ "Config","InstallLogs","InstallAem","Run" ]
+          				},
+              		"Config" : {
+                		"files" : {
+			              "/etc/cfn/cfn-hup.conf" : {
+			                "content" : { "Fn::Join" : ["", [
+			                  "[main]\n",
+			                  "stack=", { "Ref" : "AWS::StackId" }, "\n",
+			                  "region=", { "Ref" : "AWS::Region" }, "\n"
+			                ]]},
+			                "mode"    : "000400",
+			                "owner"   : "root",
+			                "group"   : "root"
+			              },
+			
+			              "/etc/cfn/hooks.d/cfn-auto-reloader.conf" : {
+			                "content": { "Fn::Join" : ["", [
+			                  "[cfn-auto-reloader-hook]\n",
+			                  "triggers=post.update\n",
+			                  "path=Resources.ec2pub.Metadata.AWS::CloudFormation::Init\n",
+			                  "action=/opt/aws/bin/cfn-init -v ",
+			                  "         --stack ", { "Ref" : "AWS::StackName" },
+			                  "         --resource ec2pub ",
+			                  "         --configsets InstallAndRun ",
+			                  "         --region ", { "Ref" : "AWS::Region" }, "\n",
+			                  "runas=root\n"
+			                ]]}
+			              }
+			            },
+			
+			            "services" : {
+			              "sysvinit" : {
+			                "cfn-hup" : { "enabled" : "true", "ensureRunning" : "true",
+			                              "files" : ["/etc/cfn/cfn-hup.conf", "/etc/cfn/hooks.d/cfn-auto-reloader.conf"]}
+			              }
+			            }
+                  	}, 
+                   	"InstallLogs" : {
+                      "packages" : {
+			              "yum" : {
+			                "awslogs" : []
+			              }
+			            },
+			
+			            "files": {
+			              "/etc/awslogs/awslogs.conf": {
+			                "content": { "Fn::Join": [ "", [
+			                  "[general]\n",
+			                  "state_file= /var/awslogs/state/agent-state\n",
+			
+			                  "[/var/log/cloud-init.log]\n",
+			                  "file = /var/log/cloud-init.log\n",
+			                  "log_group_name = ", { "Ref": "CloudFormationLogs" }, "\n",
+			                  "log_stream_name = {instance_id}/cloud-init.log\n",
+			                  "datetime_format = \n",
+			
+			                  "[/var/log/cloud-init-output.log]\n",
+			                  "file = /var/log/cloud-init-output.log\n",
+			                  "log_group_name = ", { "Ref": "CloudFormationLogs" }, "\n",
+			                  "log_stream_name = {instance_id}/cloud-init-output.log\n",
+			                  "datetime_format = \n",
+			
+			                  "[/var/log/cfn-init.log]\n",
+			                  "file = /var/log/cfn-init.log\n",
+			                  "log_group_name = ", { "Ref": "CloudFormationLogs" }, "\n",
+			                  "log_stream_name = {instance_id}/cfn-init.log\n",
+			                  "datetime_format = \n",
+			
+			                  "[/var/log/cfn-hup.log]\n",
+			                  "file = /var/log/cfn-hup.log\n",
+			                  "log_group_name = ", { "Ref": "CloudFormationLogs" }, "\n",
+			                  "log_stream_name = {instance_id}/cfn-hup.log\n",
+			                  "datetime_format = \n",
+			
+			                  "[/var/log/cfn-wire.log]\n",
+			                  "file = /var/log/cfn-wire.log\n",
+			                  "log_group_name = ", { "Ref": "CloudFormationLogs" }, "\n",
+			                  "log_stream_name = {instance_id}/cfn-wire.log\n",
+			                  "datetime_format = \n",
+			
+			                  "[/var/log/httpd]\n",
+			                  "file = /var/log/httpd/*\n",
+			                  "log_group_name = ", { "Ref": "CloudFormationLogs" }, "\n",
+			                  "log_stream_name = {instance_id}/httpd\n",
+			                  "datetime_format = %d/%b/%Y:%H:%M:%S\n"
+			                ] ] },
+			                "mode": "000444",
+			                "owner": "root",
+			                "group": "root"
+			              },
+			              "/etc/awslogs/awscli.conf": {
+			                "content": { "Fn::Join": [ "", [
+			                  "[plugins]\n",
+			                  "cwlogs = cwlogs\n",
+			                  "[default]\n",
+			                  "region = ", { "Ref" : "AWS::Region" }, "\n"
+			                ] ] },
+			                "mode": "000444",
+			                "owner": "root",
+			                "group": "root"
+			              }
+                 		},
+			            "commands" : {
+			              "01_create_state_directory" : {
+			                "command" : "mkdir -p /var/awslogs/state"
+			              }
+			            },
+			            "services" : {
+			              "sysvinit" : {
+			                "awslogs"    : { "enabled" : "true", "ensureRunning" : "true",
+			                                 "files" : [ "/etc/awslogs/awslogs.conf" ] }
+			              }
+			            }
+                    }, 
+              		"InstallAem" : {
+                  		"packages" : {
+              				"yum" : {}
+             			},
+                		"sources" : {
+	     					"/etc/aem/" : { "Ref" : "AEMDownloadUrl" }
+	   					},
+         				"commands" : {
+               				"02_mkdir_publish" : {
+                   				"command" : "mkdir publish",
+                       			"cwd" : "/etc/aem/"
+                     		},
+                            "04_copy_publish" : {
+                   				"command" : "cp AEM_6.1_Quickstart.jar publish",
+                       			"cwd" : "/etc/aem/"
+                     		},
+               				"06_publish_unpack" : {
+				               	"command" : "java -jar AEM_6.1_Quickstart.jar -unpack",
+                    			"cwd" : "/etc/aem/publish/"
+				            }
+               			}
+                	},
+                 	"Run" : {
+                     	"commands" : {
+                    		"02_start_publisher" : {
+		                		"command" : "CQ_RUNMODE=publish ./start",
+                    			"cwd" : "/etc/aem/publish/crx-quickstart/bin/"
+		              		}
+                        }                     
+                    }               
+                }
+     		},
       "Properties": {
         "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
 			                      { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
         "InstanceType"   : { "Ref" : "InstanceType" },
-        "KeyName"        : { "Ref" : "KeyName" }
-      }
+        "KeyName"        : { "Ref" : "KeyName" },
+        "NetworkInterfaces": [
+          {
+            "DeleteOnTermination": "true",
+            "Description": "Primary network interface",
+            "DeviceIndex": 0,
+            "SubnetId": {
+              "Ref": "subnetpub"
+            },
+            "GroupSet": [
+              {
+                "Ref": "sgpub"
+              }
+            ],
+            "AssociatePublicIpAddress": "true"
+          }
+        ],
+        "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
+		         "#!/bin/bash -xe\n",
+		         "yum update -y aws-cfn-bootstrap\n",
+				 "# Install the files and packages from the metadata\n",
+		         "/opt/aws/bin/cfn-init -v ",
+		         "         --stack ", { "Ref" : "AWS::StackName" },
+		         "         --resource ec2pub ",
+		         "         --configsets InstallAndRun ",
+		         "         --region ", { "Ref" : "AWS::Region" }, "\n",
+		         "# Signal the status from cfn-init\n",
+		         "/opt/aws/bin/cfn-signal -e $? ",
+		         "         --stack ", { "Ref" : "AWS::StackName" },
+		         "         --resource ec2pub ",
+		         "         --region ", { "Ref" : "AWS::Region" }, "\n"
+	   	]]}}
+      	},
+       "CreationPolicy" : {
+        "ResourceSignal" : {
+          "Timeout" : "PT5M"
+        }
+      }       
     },
     "ec2disp": {
       "Type": "AWS::EC2::Instance",
@@ -318,7 +503,23 @@
         "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
 			                      { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
         "InstanceType"   : { "Ref" : "InstanceType" },
-        "KeyName"        : { "Ref" : "KeyName" }
+        "KeyName"        : { "Ref" : "KeyName" },
+        "NetworkInterfaces": [
+          {
+            "DeleteOnTermination": "true",
+            "Description": "Primary network interface",
+            "DeviceIndex": 0,
+            "SubnetId": {
+              "Ref": "subnetdisp"
+            },
+            "GroupSet": [
+              {
+                "Ref": "sgdisp"
+              }
+            ],
+            "AssociatePublicIpAddress": "true"
+          }
+        ]
       }
     },
     "ec2auth": {
@@ -486,12 +687,6 @@
             "SubnetId": {
               "Ref": "subnetauth"
             },
-            "PrivateIpAddresses": [
-              {
-                "PrivateIpAddress": "10.0.0.93",
-                "Primary": "true"
-              }
-            ],
             "GroupSet": [
               {
                 "Ref": "sgauth"
