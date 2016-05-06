@@ -260,11 +260,11 @@
 			                "content": { "Fn::Join" : ["", [
 			                  "[cfn-auto-reloader-hook]\n",
 			                  "triggers=post.update\n",
-			                  "path=Resources.WebServerInstance.Metadata.AWS::CloudFormation::Init\n",
+			                  "path=Resources.AemInstance.Metadata.AWS::CloudFormation::Init\n",
 			                  "action=/opt/aws/bin/cfn-init -v ",
 			                  "         --stack ", { "Ref" : "AWS::StackName" },
-			                  "         --resource WebServerInstance ",
-			                  "         --configsets install_all ",
+			                  "         --resource AemInstance ",
+			                  "         --configsets InstallAndRun ",
 			                  "         --region ", { "Ref" : "AWS::Region" }, "\n",
 			                  "runas=root\n"
 			                ]]}
