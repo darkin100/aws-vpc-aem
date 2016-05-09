@@ -498,29 +498,66 @@
       }       
     },
     "ec2disp": {
-      "Type": "AWS::EC2::Instance",
-      "Properties": {
-        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
-			                      { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
-        "InstanceType"   : { "Ref" : "InstanceType" },
-        "KeyName"        : { "Ref" : "KeyName" },
-        "NetworkInterfaces": [
-          {
-            "DeleteOnTermination": "true",
-            "Description": "Primary network interface",
-            "DeviceIndex": 0,
-            "SubnetId": {
-              "Ref": "subnetdisp"
-            },
-            "GroupSet": [
-              {
-                "Ref": "sgdisp"
-              }
-            ],
-            "AssociatePublicIpAddress": "true"
-          }
-        ]
-      }
+      	  "Type": "AWS::EC2::Instance",
+	      "Metadata" : {
+	        "AWS::CloudFormation::Init" : {
+	          	"configSets" : { "InstallAndRun" : [ "Install" ]},
+	            "Install" : {
+	                "packages" : {
+	              		"yum" : {
+	                		"httpd" : []
+	            	  	}
+                	},
+	               	"services" : {
+		              "sysvinit" : {
+		                "httpd"    : { "enabled" : "true", "ensureRunning" : "true" }
+		              }
+                	},
+                 	"commands" : {
+                   		"01" : {
+			                "command" : "service httpd start"
+			              } 
+                  	}
+		        }
+	         }
+	      },
+	      "Properties": {
+	        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
+				                      { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
+	        "InstanceType"   : { "Ref" : "InstanceType" },
+	        "KeyName"        : { "Ref" : "KeyName" },
+	        "NetworkInterfaces": [
+	          {
+	            "DeleteOnTermination": "true",
+	            "Description": "Primary network interface",
+	            "DeviceIndex": 0,
+	            "SubnetId": {
+	              "Ref": "subnetdisp"
+	            },
+	            "GroupSet": [
+	              {
+	                "Ref": "sgdisp"
+	              }
+	            ],
+	            "AssociatePublicIpAddress": "true"
+	          }
+	        ],
+	        "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
+			         "#!/bin/bash -xe\n",
+			         "yum update -y aws-cfn-bootstrap\n",
+					 "# Install the files and packages from the metadata\n",
+			         "/opt/aws/bin/cfn-init -v ",
+			         "         --stack ", { "Ref" : "AWS::StackName" },
+			         "         --resource ec2disp ",
+			         "         --configsets InstallAndRun ",
+			         "         --region ", { "Ref" : "AWS::Region" }, "\n",
+			         "# Signal the status from cfn-init\n",
+			         "/opt/aws/bin/cfn-signal -e $? ",
+			         "         --stack ", { "Ref" : "AWS::StackName" },
+			         "         --resource ec2disp ",
+			         "         --region ", { "Ref" : "AWS::Region" }, "\n"
+		   	]]}}
+	      }
     },
     "ec2auth": {
      "Type": "AWS::EC2::Instance",
@@ -936,7 +973,9 @@
         "IpProtocol": "tcp",
         "FromPort": "22",
         "ToPort": "22",
-        "CidrIp": "0.0.0.0/0"
+        "CidrIp": {
+              "Ref": "SSHLocation"
+            }
       }
     },
     "sgiauthtcp4502": {
@@ -948,7 +987,9 @@
         "IpProtocol": "tcp",
         "FromPort": "4502",
         "ToPort": "4502",
-        "CidrIp": "0.0.0.0/0"
+        "CidrIp": {
+              "Ref": "SSHLocation"
+            }
       }
     },
     "sgidisptcp80": {
@@ -972,7 +1013,9 @@
         "IpProtocol": "tcp",
         "FromPort": "22",
         "ToPort": "22",
-        "CidrIp": "0.0.0.0/0"
+        "CidrIp": {
+              "Ref": "SSHLocation"
+            }
       }
     },
     "sgipubtcp22": {
@@ -984,7 +1027,9 @@
         "IpProtocol": "tcp",
         "FromPort": "22",
         "ToPort": "22",
-        "CidrIp": "0.0.0.0/0"
+        "CidrIp": {
+              "Ref": "SSHLocation"
+            }
       }
     },
     "sgipubtcp4502": {
@@ -996,7 +1041,9 @@
         "IpProtocol": "tcp",
         "FromPort": "4502",
         "ToPort": "4502",
-        "CidrIp": "0.0.0.0/0"
+        "CidrIp": {
+              "Ref": "SSHLocation"
+            }
       }
     },
     "sgeauth00": {
